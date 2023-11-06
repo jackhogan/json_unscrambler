@@ -8,8 +8,8 @@ The challenge presented explores a common issue encountered when trying to use L
 
 ## First thoughts
 
-This is an interesting challenge — an obvious problem that needs a robust solution to ensure a reliable system. I actually remember thinking about this when reading Stephen Wolfram's [famous blog post](https://writings.stephenwolfram.com/2023/02/what-is-chatgpt-doing-and-why-does-it-work/) explaining LLMs. He discusses how attention does a good job of producing output that conforms to the rules of a grammar — but it's not perfect.
-![](imgs/wolfram.png)
+This is an interesting challenge — an obvious problem that needs a robust solution to ensure a reliable system. I actually remember thinking about this when reading Stephen Wolfram's [famous blog post](https://writings.stephenwolfram.com/2023/02/what-is-chatgpt-doing-and-why-does-it-work/) explaining how LLMs work. He discusses how attention does a good job of producing output that conforms to the rules of a grammar — but it's not perfect.
+![](wolfram.png)
 
 In this challenge, we have a system that produces unreliable JSON output and we want to develop another system to fix any invalid outputs. Ideally, the issue would be addressed upstream; i.e. at the original LLM producing the output. Various libraries such as [Outlines](https://github.com/outlines-dev/outlines) and [ReLLM](https://github.com/r2d4/rellm) try and solve this problem. They work by masking the logits of any candidate tokens that a LLM generates which do not conform to the rules of a given grammar.
 For this project, we will assume that we don't have access to the upstream LLM and need to develop a system to fix broken JSONs. 
@@ -40,20 +40,20 @@ By fine-tuning a Llama model using a dataset of sequences of this type, we expec
 We had planned to use the provided JSON strings from Agemo; however, many resulted in prompts that exceeded the token limit for Llama models. So instead, we generated synthetic JSON data, each of which are sufficiently short but with varying schemas.
 The notebook `data_gen.ipynb` contains the code used to generate the JSON data. This resulted in 5,910 samples, of which 10% were held out for validation.
 
-Using the configuration recommended in the `huggingface` tutorial, we ran 1 epoch of fine-tuning, which took roughly 2 hours. Below is a plot of the training loss.
+Getting the model to train without running into OOM issues was a challenge. However, using the configuration recommended in this [huggingface](https://huggingface.co/blog/4bit-transformers-bitsandbytes) bitsandbytes tutorial, we ran 1 epoch of fine-tuning, which took roughly 2 hours. Below is a plot of the training loss.
 The code used to run the training can be found in the `fine-tuning.ipynb` notebook.
-![](imgs/training_loss.png)
+![](training_loss.png)
 
 ## Results
 
-The results on the hold-out data demonstrate that the fine-tuned model effectively corrects broken JSONs. Of the 591 validation samples, 99% were successfully unscrambled. Only 6 samples failed, 3 of which were due to me mistakenly setting a `max_new_tokens` argument when I generated the responses. The code used to validate the model can be found in the `validation.ipynb` notebook.
+The results on the hold-out data demonstrate that the fine-tuned model effectively corrects broken JSONs. Of the 591 validation samples, 99% were successfully unscrambled. Only 6 samples failed, 3 of which were due to me mistakenly forgetting to remove the `max_new_tokens` argument when I generated the responses. The code used to validate the model can be found in the `validation.ipynb` notebook.
 
 ## Future Steps / Considerations for Production Use
 
-The developed model clearly shows a lot of promise for solving this issue. With more computational resources, a larger and more capable model could be fine tuned using this strategy. The scripts I have developed test the model by running inference directly on the adapted transformer. This is clearly inefficient, taking ~8 seconds on Google colab to unscramble a single JSON. I had hoped to package the fine-tuned model into a quantised binary using `llama.cpp` so that it could be easily run on basic hardware using something like Simon Willison's [llm](https://github.com/simonw/llm) CLI utility. Unfortunately, I ran into issues converting the model and ran out of time. 
+The developed model clearly shows a lot of promise for solving this issue. With more computational resources, a larger and more capable model could be fine-tuned using this strategy. The scripts I have developed test the model by running inference directly on the adapted transformer. This is clearly inefficient, taking ~8 seconds on Google colab to unscramble a single JSON. I had hoped to package the fine-tuned model into a quantised binary using `llama.cpp` so that it could be easily run on basic hardware using something like Simon Willison's [llm](https://github.com/simonw/llm) CLI utility. Unfortunately, I ran into issues converting the model and ran out of time. 
 
 Beyond just scaling up and speeding up this solution approach, there are other strategies we could explore. We could look at using different base models, such as models tailored to code; we could explore models with other architectures, e.g. seq2seq models could be promising for this task; we could explore incorporating generation guiding techniques such as those previously mentioned.
 
 ## Conclusion
 
-This project captures our efforts to unscramble "micro-scrambled" JSON in LLM outputs using NLP techniques. Whilst not a comprehensive solution, it presents a promising first step towards robust handling of such issues. With more extensive data and computational resources, a robust solution could be developed using this strategy. Alternatively, upstream solutions could be considered to prevent invalid JSONs from being generated. 
+This project captures our efforts to unscramble "micro-scrambled" JSON in LLM outputs using NLP techniques. Whilst not a comprehensive solution, it presents a promising first step towards robust handling of such issues. With more extensive data and computational resources, a robust solution could be developed using this strategy. Alternatively, upstream solutions could be considered to prevent invalid JSONs from being generated in the first place. 
