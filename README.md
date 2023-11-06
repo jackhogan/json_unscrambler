@@ -9,7 +9,7 @@ The challenge presented explores a common issue encountered when trying to use L
 ## First thoughts
 
 This is an interesting challenge — an obvious problem that needs a robust solution to ensure a reliable system. I actually remember thinking about this when reading Stephen Wolfram's [famous blog post](https://writings.stephenwolfram.com/2023/02/what-is-chatgpt-doing-and-why-does-it-work/) explaining how LLMs work. He discusses how attention does a good job of producing output that conforms to the rules of a grammar — but it's not perfect.
-![](wolfram.png)
+![](imgs/wolfram.png)
 
 In this challenge, we have a system that produces unreliable JSON output and we want to develop another system to fix any invalid outputs. Ideally, the issue would be addressed upstream; i.e. at the original LLM producing the output. Various libraries such as [Outlines](https://github.com/outlines-dev/outlines) and [ReLLM](https://github.com/r2d4/rellm) try and solve this problem. They work by masking the logits of any candidate tokens that a LLM generates which do not conform to the rules of a given grammar.
 For this project, we will assume that we don't have access to the upstream LLM and need to develop a system to fix broken JSONs. 
@@ -42,7 +42,7 @@ The notebook `data_gen.ipynb` contains the code used to generate the JSON data. 
 
 Getting the model to train without running into OOM issues was a challenge. However, using the configuration recommended in this [huggingface](https://huggingface.co/blog/4bit-transformers-bitsandbytes) bitsandbytes tutorial, we ran 1 epoch of fine-tuning, which took roughly 2 hours. Below is a plot of the training loss.
 The code used to run the training can be found in the `fine-tuning.ipynb` notebook.
-![](training_loss.png)
+![](imgs/training_loss.png)
 
 ## Results
 
