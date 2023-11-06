@@ -1,6 +1,6 @@
 # JSON unscrambler
 
-This repo contains the code and report for the Agemo AI Research Engineer take-home task.
+This repo contains the code and report for the Agemo AI Research Engineer take-home task — see [usage](##-usage).
 
 ## Introduction
 
@@ -57,3 +57,7 @@ Beyond just scaling up and speeding up this solution approach, there are other s
 ## Conclusion
 
 This project captures our efforts to unscramble "micro-scrambled" JSON in LLM outputs using NLP techniques. Whilst not a comprehensive solution, it presents a promising first step towards robust handling of such issues. With more extensive data and computational resources, a robust solution could be developed using this strategy. Alternatively, upstream solutions could be considered to prevent invalid JSONs from being generated in the first place. 
+
+## Usage
+
+The fine-tuned LoRa adapter can be found at <https://huggingface.co/jackhogan/llama_agemo_finetune> and the synthetic JSON data is at <https://huggingface.co/datasets/jackhogan/agemo_json_prompts>. Note, to run the fine-tuning script, a hugginface access token must be provided for an account with approved access to Llama models. This must also be provided in the `json_unscramble.py` implementation script. 
