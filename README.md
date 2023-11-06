@@ -1,6 +1,6 @@
 # JSON unscrambler
 
-This repo contains the code and report for the Agemo AI Research Engineer take-home task — see [usage](#-usage).
+This repo contains the code and report for the Agemo AI Research Engineer take-home task — see [usage](#usage).
 
 ## Introduction
 
